@@ -1,0 +1,12 @@
+[submodule "event-service"]
+	path = event-service
+	url = https://github.com/mukuldaroch/event-service.git
+[submodule "ticket-service"]
+	path = ticket-service
+	url = https://github.com/mukuldaroch/ticket-service.git
+[submodule "orchestrator-service"]
+	path = orchestrator-service
+	url = https://github.com/mukuldaroch/orchestrator-service.git
+[submodule "gateway-service"]
+	path = gateway-service
+	url = https://github.com/mukuldaroch/gateway-service.git
