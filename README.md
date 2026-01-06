@@ -22,7 +22,7 @@ Each responsibility is handled by a dedicated microservice communicating through
 
 ![ EventForge Architecture Diagram ](docs/assets/api-gateway.jpg)
 
-![ EventForge Full Architecture Design](https://miro.com/app/board/uXjVGVq5l3U=/?moveToWidget=3458764653985736600&cot=14)
+[ EventForge Full Architecture Design](https://miro.com/app/board/uXjVGVq5l3U=/?moveToWidget=3458764653985736600&cot=14)
 
 The platform is composed of multiple independent services, including:
 
