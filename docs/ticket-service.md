@@ -4,11 +4,11 @@
 
 ## Ticket Service — EventManagment Microservice
 
-The **Ticket Service** is a dedicated **microservice** within the Event ecosystem that handles **all ticket-related operations**. It provides backend API for **creating, managing, and selling tickets** for events.
+The **Ticket Service** is a dedicated **microservice** within the Event ecosystem that handles **all ticket-related operations**. It provides backend API for **creating, managing Ticket types** for events.
 
-### Event Status Flow
+### Ticket Status Flow
 
-> **CREATED -> RESERVED -> PURCHASED -> CANCELLED -> EXPIRED**
+> **PURCHASED -> CANCELLED -> EXPIRED**
 
 ### Internal Architecture
 
@@ -31,6 +31,7 @@ Tickets
 
 | Method     | Endpoint              | Description                  |
 | ---------- | --------------------- | ---------------------------- |
+| **POST**   | `/ticket`             | Create tickets for a event   |
 | **GET**    | `/ticket`             | List all tickets for a event |
 | **GET**    | `/ticket/{ticket_id}` | Retrieve details of a ticket |
 | **PATCH**  | `/ticket{ticket_id}`  | Update ticket info           |

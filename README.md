@@ -118,6 +118,53 @@ Each service validates the token independently.
 
 ---
 
+## API Endpoints
+
+events
+
+| Method     | Endpoint             | Description            |
+| ---------- | -------------------- | ---------------------- |
+| **POST**   | `/events`            | Create a new event     |
+| **GET**    | `/events/{event_id}` | Retrieve event details |
+| **PATCH**  | `/events/{event_id}` | Update event details   |
+| **DELETE** | `/events/{event_id}` | Delete an event        |
+
+Public Events
+
+| Method  | Endpoint                       | Description                 |
+| ------- | ------------------------------ | --------------------------- |
+| **GET** | `/events/published`            | List all published events   |
+| **GET** | `/events/published/{event_id}` | Get published event details |
+
+orchestrator-service
+
+| Method | Endpoint                | What it does                                        | Who actually handles it                |
+| ------ | ----------------------- | --------------------------------------------------- | -------------------------------------- |
+| POST   | `/api/events`           | Creates an event **and** its ticket types in one go | Orchestrator → Event + Ticket services |
+| GET    | `/api/events/{eventId}` | Fetches event details                               | Event Service (via Orchestrator)       |
+| PATCH  | `/api/events/{eventId}` | Updates event metadata                              | Event Service (via Orchestrator)       |
+| DELETE | `/api/events/{eventId}` | Deletes the event and all related ticket types      | Orchestrator → Event + Ticket services |
+
+Ticket-Types
+
+| Method     | Endpoint                                    | Description                        |
+| ---------- | ------------------------------------------- | ---------------------------------- |
+| **GET**    | `/ticket-types?{event-id}`                  | List all ticket types for an event |
+| **GET**    | `/ticket-types/{ticket_type_id}`            | Retrieve ticket type details       |
+| **PATCH**  | `/ticket-types/{ticket-type-id}?{event-id}` | Update ticket type                 |
+| **DELETE** | `/ticket-types/{ticket_type_id}`            | Delete ticket type                 |
+
+Tickets
+
+| Method     | Endpoint              | Description                  |
+| ---------- | --------------------- | ---------------------------- |
+| **GET**    | `/ticket`             | List all tickets for a event |
+| **GET**    | `/ticket/{ticket_id}` | Retrieve details of a ticket |
+| **PATCH**  | `/ticket{ticket_id}`  | Update ticket info           |
+| **DELETE** | `/ticket{ticket_id}`  | Delete a ticket of a event   |
+
+---
+
 ## 📦 Repository Layout
 
 This repository uses a **multi-repo microservice model** (each service can be cloned and deployed independently), but architecturally it behaves as one system.
