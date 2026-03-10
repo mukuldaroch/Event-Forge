@@ -14,3 +14,6 @@
 	path = gateway-service
 	url = https://github.com/mukuldaroch/gateway-service.git
 	branch = main
+[submodule "booking-service"]
+	path = booking-service
+	url = https://github.com/mukuldaroch/booking-service.git

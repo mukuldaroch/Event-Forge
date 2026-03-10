@@ -24,12 +24,13 @@ The system supports three primary roles:
 
 The platform is composed of multiple independent services, including:
 
-| Service            | What it owns           | What it does                                    |
-| ------------------ | ---------------------- | ----------------------------------------------- |
-| **Event Service**  | Events                 | Creates, updates, publishes and exposes events  |
-| **Ticket Service** | Ticket types & tickets | Manages pricing, inventory, and ticket issuance |
-| **Orchestrator**   | Nothing                | Coordinates multi-service operations            |
-| **Gateway**        | Nothing                | Coordinates api requests , rate limiting        |
+| Service             | What it owns           | What it does                                    |
+| ------------------- | ---------------------- | ----------------------------------------------- |
+| **Event Service**   | Events                 | Creates, updates, publishes and exposes events  |
+| **Ticket Service**  | Ticket types & tickets | Manages pricing, inventory, and ticket issuance |
+| **Booking Service** | Booking of a Event     | Booking of ticket types of a event              |
+| **Orchestrator**    | Nothing                | Coordinates multi-service operations            |
+| **Gateway**         | Nothing                | Coordinates api requests , rate limiting        |
 
 > **Github links for each microservice main branch:**
 >
@@ -79,12 +80,14 @@ They all join the same Docker network so they can talk via container names.
 
 | Service                  | Container Name         | Internal Port | Exposed Port | Who can access it      |
 | ------------------------ | ---------------------- | ------------- | ------------ | ---------------------- |
-| **Keycloak**             | `keycloak`             | 8080          | 8080         | Browser , Postman      |
-| **event-service**        | `event-service`        | 8083          | 8083         | Orchestrator, Postman  |
-| **ticket-service**       | `ticket-service`       | 8084          | 8084         | Orchestrator, Postman  |
+| **Keycloak**             | `keycloak`             | 8080          | 8080         | Browser                |
+| **event-service**        | `event-service`        | 8083          | 8083         | Orchestrator           |
+| **ticket-service**       | `ticket-service`       | 8084          | 8084         | Orchestrator           |
+| **booking-service**      | `booking-service`      | 9090          | 8085         | Orchestrator           |
 | **orchestrator-service** | `orchestrator-service` | 8085          | 8085         | Frontend / API clients |
-| **event-database**       | `event-database`       | 5432          | 5432         | pgcli , postgres       |
-| **ticket-database**      | `ticket-database`      | 5434          | 5434         | pgcli , postgres       |
+| **event-database**       | `event-database`       | 5432          | 5432         | event-service          |
+| **ticket-database**      | `ticket-database`      | 5434          | 5434         | ticket-service         |
+| **booking-database**     | `booking-database`     | 5432          | 5435         | booking-service        |
 
 ---
 
@@ -120,6 +123,15 @@ Each service validates the token independently.
 
 ## API Endpoints
 
+orchestrator-service
+
+| Method | Endpoint                | What it does                                        | Who actually handles it                |
+| ------ | ----------------------- | --------------------------------------------------- | -------------------------------------- |
+| POST   | `/api/events`           | Creates an event **and** its ticket types in one go | Orchestrator → Event + Ticket services |
+| GET    | `/api/events/{eventId}` | Fetches event details                               | Event Service (via Orchestrator)       |
+| PATCH  | `/api/events/{eventId}` | Updates event metadata                              | Event Service (via Orchestrator)       |
+| DELETE | `/api/events/{eventId}` | Deletes the event and all related ticket types      | Orchestrator → Event + Ticket services |
+
 events
 
 | Method     | Endpoint             | Description            |
@@ -135,15 +147,6 @@ Public Events
 | ------- | ------------------------------ | --------------------------- |
 | **GET** | `/events/published`            | List all published events   |
 | **GET** | `/events/published/{event_id}` | Get published event details |
-
-orchestrator-service
-
-| Method | Endpoint                | What it does                                        | Who actually handles it                |
-| ------ | ----------------------- | --------------------------------------------------- | -------------------------------------- |
-| POST   | `/api/events`           | Creates an event **and** its ticket types in one go | Orchestrator → Event + Ticket services |
-| GET    | `/api/events/{eventId}` | Fetches event details                               | Event Service (via Orchestrator)       |
-| PATCH  | `/api/events/{eventId}` | Updates event metadata                              | Event Service (via Orchestrator)       |
-| DELETE | `/api/events/{eventId}` | Deletes the event and all related ticket types      | Orchestrator → Event + Ticket services |
 
 Ticket-Types
 
@@ -162,6 +165,16 @@ Tickets
 | **GET**    | `/ticket/{ticket_id}` | Retrieve details of a ticket |
 | **PATCH**  | `/ticket{ticket_id}`  | Update ticket info           |
 | **DELETE** | `/ticket{ticket_id}`  | Delete a ticket of a event   |
+
+Bookings
+
+| Method   | Endpoint                         | Description                       |
+| -------- | -------------------------------- | --------------------------------- |
+| **POST** | `/bookings`                      | Create a new booking              |
+| **GET**  | `/bookings/{booking_id}`         | Retrieve booking details          |
+| **POST** | `/bookings/{booking_id}/cancel`  | Cancel a booking                  |
+| **POST** | `/bookings/{booking_id}/confirm` | Confirm booking after payment     |
+| **POST** | `/bookings/{booking_id}/expire`  | Expire booking (internal process) |
 
 ---
 
