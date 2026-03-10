@@ -10,10 +10,6 @@ The **Event Service** is a core **microservice** within the EventForge ecosystem
 
 > **DRAFT → PUBLISHED → CLOSED PUBLISHED → CANCELLED**
 
-### Internal Architecture
-
-> **Controller → Service → Repository → Database**
-
 ---
 
 ## API Endpoints
@@ -33,6 +29,10 @@ Public Events
 | ------- | ------------------------------ | --------------------------- |
 | **GET** | `/events/published`            | List all published events   |
 | **GET** | `/events/published/{event_id}` | Get published event details |
+
+```txt
+
+```
 
 ```txt
 
@@ -64,3 +64,16 @@ Public Events
      ├── repositories
      └── services
 ```
+
+### Features
+
+- Search, filtering, and pagination support
+- Event caching for high-read performance
+
+### Future Plans
+
+- Scheduled event publishing
+- Automatic event closure after event date
+- Role-based access control and organizer permissions
+- Centerlized logging using kafka
+- API versioning for backward compatibility

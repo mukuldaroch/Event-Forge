@@ -1,7 +1,9 @@
+```txt
+```
+
 ## EventForge — Microservices Event Platform
 
 EventForge is a containerized microservices-based event management system.
-
 It demonstrates secure service-to-service communication, domain isolation, and orchestrated workflows.
 
 ### Architecture Overview
@@ -14,12 +16,28 @@ It demonstrates secure service-to-service communication, domain isolation, and o
 
 ### Services
 
-| Service        | Responsibility                   | Database   |
-| -------------- | -------------------------------- | ---------- |
-| Event Service  | Event CRUD & publishing          | PostgreSQL |
-| Ticket Service | Ticket types, pricing, inventory | PostgreSQL |
-| Orchestrator   | Multi-service coordination       | None       |
-| API Gateway    | Entry point, rate limiting       | None       |
+| Service         | Responsibility                   | Database   |
+| --------------- | -------------------------------- | ---------- |
+| Event Service   | Event CRUD & publishing          | PostgreSQL |
+| Ticket Service  | Ticket types, pricing, inventory | PostgreSQL |
+| Booking Service | Booking of Tickets               | PostgreSQL |
+| Orchestrator    | Multi-service coordination       | None       |
+| API Gateway     | Entry point, rate limiting       | None       |
+
+### Infrastructure
+
+- All services run in Docker containers
+- Communication via container names
+- PostgreSQL per service
+- Centralized auth via Keycloak
+
+```txt
+
+```
+
+```txt
+
+```
 
 ### Key Technical Highlights
 
@@ -31,24 +49,13 @@ It demonstrates secure service-to-service communication, domain isolation, and o
 - Docker & Docker Compose setup
 - Redis (caching)
 
-### Orchestration Example
+### Design Principles
 
-Creating an event with tickets:
-
-1. Orchestrator receives request
-2. Calls Event Service
-3. Calls Ticket Service
-4. Handles failure scenarios
-5. Returns aggregated response
-
-Business action → multiple service calls → coordinated centrally.
-
-### Infrastructure
-
-- All services run in Docker containers
-- Communication via container names
-- PostgreSQL per service
-- Centralized auth via Keycloak
+- Clear separation of concerns (Controller → Service → Repository)
+- Domain-driven service boundaries
+- Single responsibility per microservice
+- RESTful API design conventions
+- Database consistency via transactional boundaries
 
 ### Planned Extensions
 

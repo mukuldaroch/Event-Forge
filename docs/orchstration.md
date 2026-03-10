@@ -1,4 +1,4 @@
-## Orchestrator Service
+# Orchestrator Service
 
 A service whose only job is to coordinate multiple domain services to fulfill a single business operation.
 Creating an event with ticket types is **one business action** — but **two microservices** must act.
@@ -26,17 +26,9 @@ The orchestrator exposes **one clean API** to the outside world and internally c
 | PATCH  | `/api/events/{eventId}` | Updates event metadata                              | Event Service (via Orchestrator)       |
 | DELETE | `/api/events/{eventId}` | Deletes the event and all related ticket types      | Orchestrator → Event + Ticket services |
 
-Booking APIs
-
-| Method | Endpoint                           | Description                         | Flow                             |
-| ------ | ---------------------------------- | ----------------------------------- | -------------------------------- |
-| POST   | `/api/bookings`                    | Create booking and initiate payment | Orchestrator → Booking → Payment |
-| GET    | `/api/bookings/{bookingId}`        | Fetch booking details               | Orchestrator → Booking           |
-| POST   | `/api/bookings/{bookingId}/cancel` | Cancel booking                      | Orchestrator → Booking           |
-
 ---
 
-## 🏗 High Level Flow
+# 🏗 High Level Flow
 
 When a client calls:
 
@@ -57,34 +49,6 @@ Orchestrator
   │          └── returns eventId
   │
   └──▶ Ticket Service (create ticket types using eventId)
-```
-
-## Booking + Payment Flow (Critical Path)
-
-When client creates booking:
-
-```
-Client
-  │
-  ▼
-Orchestrator
-  │
-  ├──▶ Booking Service
-  │        POST /bookings
-  │        returns bookingId
-  │
-  ├──▶ Payment Service
-  │        POST /payments
-  │        returns SUCCESS / FAILED
-  │
-  ├──▶ if SUCCESS
-  │        Booking Service
-  │        POST /bookings/{id}/confirm
-  │        POST /ticket/
-  │
-  └──▶ if FAILED
-           Booking Service
-           POST /bookings/{id}/fail
 ```
 
 ---

@@ -10,15 +10,9 @@ The **Ticket Service** is a dedicated **microservice** within the Event ecosyste
 
 > **PURCHASED -> CANCELLED -> EXPIRED**
 
-### Internal Architecture
-
-> **Controller → Service → Repository → Database**
-
 ---
 
 ## API Endpoints
-
-Ticket-Types
 
 | Method     | Endpoint                                    | Description                        |
 | ---------- | ------------------------------------------- | ---------------------------------- |
@@ -52,14 +46,8 @@ main.java.com.daroch.ticket
  │   └── enums
  ├── dto
  │   ├── ticket
- │   │   ├── request
- │   │   └── response
  │   ├── commands
- │   │   ├── ticket
- │   │   └── tickettype
  │   └── tickettype
- │       ├── request
- │       └── response
  ├── exceptions
  ├── mappers
  ├── repositories
