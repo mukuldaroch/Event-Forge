@@ -9,22 +9,22 @@ The system supports three primary roles:
 - **Organizers** – create and manage events, configure tickets, track sales
 - **Attendees** – browse events, purchase tickets, and access event passes
 - **Staff** – validate tickets and manage on-ground event operations
-  ![ Roles ](docs/assets/events/roles.jpg)
+  ![ Roles ](docs/assets/roles.jpg)
 
 ---
 
 ## Microservices Architecture
 
-![ EventForge Architecture Diagram ](docs/assets/events/event-forge.jpg)
+![ EventForge Architecture Diagram ](docs/assets/event-forge.jpg)
 
-![ Database Architecture Diagram ](docs/assets/events/ERD-Diagram.jpg)
+![ Database Architecture Diagram ](docs/assets/ERD-Diagram.jpg)
 
-![ Event-Service Architecture Diagram ](docs/assets/events/event-service.jpg)
-![ Ticket-Service Architecture Diagram ](docs/assets/events/ticket-service.jpg)
-![ Orchestration-Service Architecture Diagram ](docs/assets/events/orchstration-service.jpg)
+![ Event-Service Architecture Diagram ](docs/assets/event-service.jpg)
+![ Ticket-Service Architecture Diagram ](docs/assets/ticket-service.jpg)
+![ Orchestration-Service Architecture Diagram ](docs/assets/orchstration-service.jpg)
 
-![ Booking-Service Architecture Diagram ](docs/assets/events/booking-service.jpg)
-![ Payment-Service Architecture Diagram ](docs/assets/events/payment-service.jpg)
+![ Booking-Service Architecture Diagram ](docs/assets/booking-service.jpg)
+![ Payment-Service Architecture Diagram ](docs/assets/payment-service.jpg)
 
 ## [ EventForge Full Architecture Design link](https://miro.com/app/board/uXjVGVq5l3U=/?moveToWidget=3458764653985736600&cot=14)
 
