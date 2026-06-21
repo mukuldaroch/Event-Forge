@@ -9,12 +9,22 @@ The system supports three primary roles:
 - **Organizers** – create and manage events, configure tickets, track sales
 - **Attendees** – browse events, purchase tickets, and access event passes
 - **Staff** – validate tickets and manage on-ground event operations
+  ![ Roles ](docs/assets/events/roles.jpg)
 
 ---
 
 ## Microservices Architecture
 
-![ EventForge Architecture Diagram ](docs/assets/api-gateway.jpg)
+![ EventForge Architecture Diagram ](docs/assets/events/event-forge.jpg)
+
+![ Database Architecture Diagram ](docs/assets/events/ERD-Diagram.jpg)
+
+![ Event-Service Architecture Diagram ](docs/assets/events/event-service.jpg)
+![ Ticket-Service Architecture Diagram ](docs/assets/events/ticket-service.jpg)
+![ Orchestration-Service Architecture Diagram ](docs/assets/events/orchstration-service.jpg)
+
+![ Booking-Service Architecture Diagram ](docs/assets/events/booking-service.jpg)
+![ Payment-Service Architecture Diagram ](docs/assets/events/payment-service.jpg)
 
 ## [ EventForge Full Architecture Design link](https://miro.com/app/board/uXjVGVq5l3U=/?moveToWidget=3458764653985736600&cot=14)
 
@@ -29,6 +39,7 @@ The platform is composed of multiple independent services, including:
 | **Event Service**   | Events                 | Creates, updates, publishes and exposes events  |
 | **Ticket Service**  | Ticket types & tickets | Manages pricing, inventory, and ticket issuance |
 | **Booking Service** | Booking of a Event     | Booking of ticket types of a event              |
+| **Payment Service** | Payments               | Payment for a Bookings                          |
 | **Orchestrator**    | Nothing                | Coordinates multi-service operations            |
 | **Gateway**         | Nothing                | Coordinates api requests , rate limiting        |
 
@@ -38,25 +49,17 @@ The platform is composed of multiple independent services, including:
 > - [Ticket Service](https://github.com/mukuldaroch/ticket-service)
 > - [Orchestration Service](https://github.com/mukuldaroch/orchestration-service)
 > - [Gateway Service ](https://github.com/mukuldaroch/gateway-service)
-
-> ⚠️ **Note — Payment & Event Streaming**
->
-> The **Payment Service** is a planned future component and is not yet part of the active system.
-> In parallel, the platform is being prepared for **event-driven communication** using **Kafka** for:
->
-> - Centralized logging
-> - Asynchronous workflows (payments, notifications etc.)
+> - [Gateway Service ](https://github.com/mukuldaroch/payment-service)
 
 ---
 
-## 🧩 Tech Stack
+## Tech Stack
 
-- **Backend:** Spring Boot (Java 17+)
+- **Backend:** Spring Boot (Java 17)
 - **Build Tool:** Gradle
 - **Database:** PostgreSQL
 - **Containerization:** Docker & Docker Compose
 - **Auth:** Keycloak JWT-based Authentication
-- **Frontend (Planned):** React + Tailwind
 - **Deployment:** Dockerized microservice setup
 
 ---
@@ -78,32 +81,19 @@ They all join the same Docker network so they can talk via container names.
 
 ---
 
-| Service                  | Container Name         | Internal Port | Exposed Port | Who can access it      |
-| ------------------------ | ---------------------- | ------------- | ------------ | ---------------------- |
-| **Keycloak**             | `keycloak`             | 8080          | 8080         | Browser                |
-| **event-service**        | `event-service`        | 8083          | 8083         | Orchestrator           |
-| **ticket-service**       | `ticket-service`       | 8084          | 8084         | Orchestrator           |
-| **booking-service**      | `booking-service`      | 9090          | 8085         | Orchestrator           |
-| **orchestrator-service** | `orchestrator-service` | 8085          | 8085         | Frontend / API clients |
-| **event-database**       | `event-database`       | 5432          | 5432         | event-service          |
-| **ticket-database**      | `ticket-database`      | 5434          | 5434         | ticket-service         |
-| **booking-database**     | `booking-database`     | 5432          | 5435         | booking-service        |
-
----
-
-## Why Orchestration Exists
-
-Creating an event with tickets is **one business action**, but technically it requires:
-
-1. Creating the Event
-2. Creating Ticket Types linked to that Event
-
-It owns:
-
-- The public API
-- The call order
-- Failure handling
-- JWT forwarding
+| Service                  | Container Name         | Internal Port | Exposed Port |
+| ------------------------ | ---------------------- | ------------- | ------------ |
+| **Keycloak**             | `keycloak`             | 8080          | 8080         |
+| **Redis**                | `redis`                | 6379          | 6379         |
+| **event-service**        | `event-service`        | 8080          | 8083         |
+| **orchestrator-service** | `orchestrator-service` | 8080          | 8082         |
+| **ticket-service**       | `ticket-service`       | 8080          | 8084         |
+| **booking-service**      | `booking-service`      | 8080          | 8085         |
+| **payment-service**      | `booking-service`      | 8080          | 8086         |
+| **event-database**       | `event-database`       | 5432          | 5432         |
+| **ticket-database**      | `ticket-database`      | 5434          | 5434         |
+| **booking-database**     | `booking-database`     | 5432          | 5435         |
+| **payment-database**     | `payment-database`     | 5432          | 5436         |
 
 ---
 
@@ -111,70 +101,7 @@ It owns:
 
 Users authenticate once and receive a **JWT**.
 
-That JWT is then:
-
-- Sent to Orchestrator
-- Forwarded to Event Service
-- Forwarded to Ticket Service
-
 Each service validates the token independently.
-
----
-
-## API Endpoints
-
-orchestrator-service
-
-| Method | Endpoint                | What it does                                        | Who actually handles it                |
-| ------ | ----------------------- | --------------------------------------------------- | -------------------------------------- |
-| POST   | `/api/events`           | Creates an event **and** its ticket types in one go | Orchestrator → Event + Ticket services |
-| GET    | `/api/events/{eventId}` | Fetches event details                               | Event Service (via Orchestrator)       |
-| PATCH  | `/api/events/{eventId}` | Updates event metadata                              | Event Service (via Orchestrator)       |
-| DELETE | `/api/events/{eventId}` | Deletes the event and all related ticket types      | Orchestrator → Event + Ticket services |
-
-events
-
-| Method     | Endpoint             | Description            |
-| ---------- | -------------------- | ---------------------- |
-| **POST**   | `/events`            | Create a new event     |
-| **GET**    | `/events/{event_id}` | Retrieve event details |
-| **PATCH**  | `/events/{event_id}` | Update event details   |
-| **DELETE** | `/events/{event_id}` | Delete an event        |
-
-Public Events
-
-| Method  | Endpoint                       | Description                 |
-| ------- | ------------------------------ | --------------------------- |
-| **GET** | `/events/published`            | List all published events   |
-| **GET** | `/events/published/{event_id}` | Get published event details |
-
-Ticket-Types
-
-| Method     | Endpoint                                    | Description                        |
-| ---------- | ------------------------------------------- | ---------------------------------- |
-| **GET**    | `/ticket-types?{event-id}`                  | List all ticket types for an event |
-| **GET**    | `/ticket-types/{ticket_type_id}`            | Retrieve ticket type details       |
-| **PATCH**  | `/ticket-types/{ticket-type-id}?{event-id}` | Update ticket type                 |
-| **DELETE** | `/ticket-types/{ticket_type_id}`            | Delete ticket type                 |
-
-Tickets
-
-| Method     | Endpoint              | Description                  |
-| ---------- | --------------------- | ---------------------------- |
-| **GET**    | `/ticket`             | List all tickets for a event |
-| **GET**    | `/ticket/{ticket_id}` | Retrieve details of a ticket |
-| **PATCH**  | `/ticket{ticket_id}`  | Update ticket info           |
-| **DELETE** | `/ticket{ticket_id}`  | Delete a ticket of a event   |
-
-Bookings
-
-| Method   | Endpoint                         | Description                       |
-| -------- | -------------------------------- | --------------------------------- |
-| **POST** | `/bookings`                      | Create a new booking              |
-| **GET**  | `/bookings/{booking_id}`         | Retrieve booking details          |
-| **POST** | `/bookings/{booking_id}/cancel`  | Cancel a booking                  |
-| **POST** | `/bookings/{booking_id}/confirm` | Confirm booking after payment     |
-| **POST** | `/bookings/{booking_id}/expire`  | Expire booking (internal process) |
 
 ---
 
@@ -188,6 +115,7 @@ eventforge/
 ├── ticket-service/
 ├── orchestrator-service/
 ├── gateway-service/
+├── payment-service/
 └── docs/
     └── architecture diagrams
 ```
@@ -206,11 +134,10 @@ Each service has its own:
 EventForge uses:
 
 - OAuth2 Resource Server (JWT)
-- Real Keycloak realms
 - Isolated databases
 - Docker networking
 - Service-to-service authentication
-- Orchestration
+- Event Driven architecture
 
 ---
 
@@ -218,9 +145,8 @@ EventForge uses:
 
 Planned services:
 
-- Payment Service
 - Notification Service
-- Search & Discovery
+- Centralized logging
 
 The architecture already supports them.
 
