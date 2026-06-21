@@ -85,6 +85,7 @@ They all join the same Docker network so they can talk via container names.
 | ------------------------ | ---------------------- | ------------- | ------------ |
 | **Keycloak**             | `keycloak`             | 8080          | 8080         |
 | **Redis**                | `redis`                | 6379          | 6379         |
+| **Kafka**                | `kafka`                | 9092          | 9092         |
 | **event-service**        | `event-service`        | 8080          | 8083         |
 | **orchestrator-service** | `orchestrator-service` | 8080          | 8082         |
 | **ticket-service**       | `ticket-service`       | 8080          | 8084         |
