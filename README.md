@@ -49,7 +49,7 @@ The platform is composed of multiple independent services, including:
 > - [Ticket Service](https://github.com/mukuldaroch/ticket-service)
 > - [Orchestration Service](https://github.com/mukuldaroch/orchestration-service)
 > - [Gateway Service ](https://github.com/mukuldaroch/gateway-service)
-> - [Gateway Service ](https://github.com/mukuldaroch/payment-service)
+> - [Payment Service ](https://github.com/mukuldaroch/payment-service)
 
 ---
 
